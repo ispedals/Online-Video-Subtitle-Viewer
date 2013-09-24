@@ -1,0 +1,356 @@
+﻿<!doctype html>
+<html lang="en" ng-app>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+		<style>
+			a:hover { cursor:pointer; }
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		<script src="http://rawgithub.com/Wolfy87/EventEmitter/master/EventEmitter.js"></script>
+		<script>
+		function Timer () {
+			'use strict';
+			var ee = new EventEmitter();
+			var intervalId, previousClockTime;
+
+			var tickInterval = 50;
+
+			this.currentTime = 0;
+
+			var tick = function() {
+				var currentClockTime = Date.now();
+				var elapsedTimeDuration = currentClockTime - previousClockTime
+				this.currentTime += elapsedTimeDuration;
+				previousClockTime =  currentClockTime;
+				var currentTime = this.currentTime;
+				ee.emitEvent('timer-tick', [currentTime]);
+			}.bind(this);
+
+			this.start = function( startTime ) {
+				if(intervalId) {
+					this.stop();
+				}
+				previousClockTime = Date.now();
+				this.currentTime = startTime || 0;
+				intervalId = setInterval(tick, tickInterval);
+				var currentTime = this.currentTime;
+				ee.emitEvent('timer-start', [currentTime]);
+			};
+
+			this.stop = function( currentTime ){
+				clearInterval(intervalId);
+				intervalId = null;
+				this.currentTime =  typeof(currentTime) == 'undefined' ? this.currentTime : currentTime;
+				var currentTime = this.currentTime;
+				ee.emitEvent('timer-stop', [currentTime]);
+			};
+
+			this.play = function() {
+				if(intervalId) {
+					console.log('Tried to play timer that is already running');
+					return;
+				}
+				this.start(this.currentTime);
+			};
+
+
+			this.addListener = function(type, listener) {
+				ee.addListener(type, listener);
+			};
+
+			this.removeListener = function(type, listener) {
+				ee.removeListener(type, listener);
+			};
+		}
+		</script>
+		<script>
+		// from http://commons.wikimedia.org/wiki/TimedText:Edit_Button.ogv.en.srt
+		var data = [
+			{
+			  "text" : "Thereâs an \"edit\" button",
+			  "end" : "00:00:02.414",
+			  "start" : "00:00:01.114"
+			},
+			{
+			  "start" : "00:01:02.043",
+			  "text" : "\"Save\".",
+			  "end" : "00:01:04.203"
+			},
+			{
+			  "start" : "00:00:02.530",
+			  "text" : "Just click on it,",
+			  "end" : "00:00:03.830"
+			},
+			{
+			  "start" : "00:00:03.830",
+			  "end" : "00:00:06.664",
+			  "text" : "find the place where the text is, and edit"
+			},
+			{
+			  "end" : "00:00:09.110",
+			  "text" : "and then click \"Save\". Itâs that easy.",
+			  "start" : "00:00:06.664"
+			},
+			{
+			  "end" : "00:00:10.913",
+			  "text" : "The cool thing about Wikipedia,",
+			  "start" : "00:00:09.752"
+			},
+			{
+			  "end" : "00:00:12.236",
+			  "text" : "is that you can change things.",
+			  "start" : "00:00:11.163"
+			},
+			{
+			  "start" : "00:00:12.236",
+			  "text" : "You donât need anybodyâs permission",
+			  "end" : "00:00:14.066"
+			},
+			{
+			  "start" : "00:00:14.066",
+			  "end" : "00:00:15.325",
+			  "text" : "and itâs not hard."
+			},
+			{
+			  "text" : "It looks a little bit daunting at first,",
+			  "end" : "00:00:17.809",
+			  "start" : "00:00:15.325"
+			},
+			{
+			  "end" : "00:00:19.829",
+			  "text" : "but itâs really not hard",
+			  "start" : "00:00:17.809"
+			},
+			{
+			  "text" : "People donât realise, as though itâs some sort of blindness.",
+			  "end" : "00:00:23.777",
+			  "start" : "00:00:19.829"
+			},
+			{
+			  "text" : "People read articles and they donât see the \"edit\" button.",
+			  "end" : "00:00:27.585",
+			  "start" : "00:00:23.777"
+			},
+			{
+			  "start" : "00:00:27.585",
+			  "text" : "Click on that button, and see what happens.",
+			  "end" : "00:00:29.721"
+			},
+			{
+			  "text" : "\"Edit.\"",
+			  "end" : "00:00:31.625",
+			  "start" : "00:00:29.721"
+			},
+			{
+			  "start" : "00:00:31.625",
+			  "text" : "When you open yourself to something,",
+			  "end" : "00:00:34.040"
+			},
+			{
+			  "end" : "00:00:35.433",
+			  "text" : "and you go and start editing,",
+			  "start" : "00:00:34.040"
+			},
+			{
+			  "end" : "00:00:38.289",
+			  "text" : "all kinds of other things can happen,",
+			  "start" : "00:00:35.433"
+			},
+			{
+			  "text" : "and thatâs really beautiful.",
+			  "end" : "00:00:40.124",
+			  "start" : "00:00:38.289"
+			},
+			{
+			  "end" : "00:00:41.679",
+			  "text" : "Like, it can be just a starting point,",
+			  "start" : "00:00:40.124"
+			},
+			{
+			  "start" : "00:00:41.679",
+			  "text" : "itâs an invitation for more life, somehow.",
+			  "end" : "00:00:45.139"
+			},
+			{
+			  "start" : "00:00:45.139",
+			  "text" : "Whenever we start an article, we donât like it,",
+			  "end" : "00:00:48.018"
+			},
+			{
+			  "end" : "00:00:49.597",
+			  "text" : "because you find it ugly.",
+			  "start" : "00:00:48.018"
+			},
+			{
+			  "text" : "But wait just... hours",
+			  "end" : "00:00:53.614",
+			  "start" : "00:00:49.597"
+			},
+			{
+			  "start" : "00:00:53.614",
+			  "text" : "and see how it will be developed to a great article.",
+			  "end" : "00:00:56.842"
+			},
+			{
+			  "start" : "00:00:56.842",
+			  "text" : "The \"edit\" button: click it, and change something,",
+			  "end" : "00:00:59.396"
+			},
+			{
+			  "text" : "save page, you have made a difference to the whole world.",
+			  "end" : "00:01:02.043",
+			  "start" : "00:00:59.396"
+			}
+			];
+		</script>
+		<script>
+			var ViewBoxCtrl = ['$scope', '$timeout', function($scope, $timeout) {
+				var clock;
+
+				var setSubtitleForDisplay = function(time){
+					var seconds = time/1000;
+					$scope.currentSubtitles = $scope.subtitles.filter(function(subtitle) {
+						return $scope.timestamp_to_seconds(subtitle.start) <= seconds && seconds <= $scope.timestamp_to_seconds(subtitle.end);
+					});
+				};
+				$scope.getSubtitles = function(e){
+					var reader = new FileReader();
+					reader.onload = function(evt) {
+						$timeout(function() {
+							$scope.subtitles= JSON.parse(evt.target.result);
+						});
+					};
+					reader.readAsText(e.files[0]);
+				};
+
+				//need to manually call digest because timer uses setinterval and updates to fast, switch to using angular based timer
+				var setClock = function(time){
+					$timeout(function() {
+						$scope.clock=time/1000;
+					});
+				};
+
+				$scope.play = function(delay) {
+					delay = delay || 0;
+					$timeout(function() {
+						clock.play();
+					}, delay * 1000);
+				};
+
+				$scope.stop = function( time ) {
+					clock.stop(time);
+				};
+
+				$scope.timestamp_to_seconds = function (timestamp) {
+					var times = /(\d\d?):(\d\d):(\d\d\.\d\d\d)/.exec(timestamp);
+					var hours = parseInt(times[1], 10);
+					var minutes = parseInt(times[2], 10);
+					var seconds = parseFloat(times[3]);
+					return (hours * 60 * 60) + (minutes * 60) + seconds;
+				};
+
+				$scope.seconds_to_timestamp = function(seconds) {
+					var minutes = Math.floor(seconds/60);
+					seconds -= minutes * 60;
+					var hours = Math.floor(minutes/60);
+					minutes -= hours * 60;
+
+					if(hours<10) {
+						hours = "0" + hours;
+					}
+					if(minutes<10) {
+						minutes = "0" + minutes;
+					}
+
+					seconds = seconds.toFixed(3);
+					if(seconds<10) {
+						seconds = "0" + seconds;
+					}
+					return hours + ':' + minutes + ':' + seconds;
+				};
+
+				$scope.currentSubtitles = [];
+				$scope.clock = 0;
+				$scope.currentSelectedTime = null;
+
+				clock = new Timer();
+				clock.addListener('timer-tick', setSubtitleForDisplay);
+				clock.addListener('timer-tick', setClock);
+				clock.addListener('timer-start', setClock);
+				clock.addListener('timer-stop', setClock);
+
+				$scope.$watch('currentSelectedTime', function(time) {
+					if (time) {
+						clock.start(time * 1000);
+					}
+				}, true);
+
+				//hard code for demo
+				$scope.subtitles = data;
+				$scope.video = '<iframe src="https://commons.wikimedia.org/wiki/File:Edit_Button.ogv?embedplayer=yes" width="640" height="360" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+
+
+			}];
+		</script>
+	</head>
+	<body ng-controller="ViewBoxCtrl">
+		<div class="container">
+			<h2>Online Video Subtitle Viewer</h2>
+			<div class="row">
+				<h2>Enter video embed code</h2>
+				<div class="col-lg-3">
+					<textarea ng-model="video" class="form-control" rows="2"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-lg-offset-3" ng-bind-html-unsafe="video"></div>
+			</div>
+			<div class="row">
+				<ul class="text-center list-unstyled" id="subtitles" ng-repeat="subtitle in currentSubtitles"><li>{{subtitle.text}}</li></ul>
+			</div>
+			<div ng-show="subtitles" class="row">
+					<div class="btn-group">
+						<button type="button" class="btn" ng-click="stop(0)">|◀◀</button>
+						<button type="button" class="btn" ng-click="stop()">■</button>
+						<button type="button" class="btn" ng-click="play()">▶</button>
+						<button type="button" class="btn" ng-click="play(5)">▶(5)</button>
+					</div>
+					<p id="clock">{{seconds_to_timestamp(clock)}}</p>
+			</div>
+			<div class="row">
+				<h2>Select subtitle file (JSON formatted)</h2>
+				<input type="file" onchange="angular.element(this).scope().getSubtitles(this)" />
+			</div>
+			<div class="row">
+				<h2>Select currently playing subtitle>
+				<select class="form-control input-small" id="subtitles" ng-model="currentSelectedTime" ng-show="subtitles" ng-options="timestamp_to_seconds(subtitle.start) as '[' + subtitle.start + '-' + subtitle.end  + ']: ' + subtitle.text for subtitle in subtitles"></select>
+			</div>
+		</div>
+	</body>
+	<h2>Usage</h2>
+	<ol>
+		<li>Paste the embed code of some video in the textbox</li>
+		<li>Browse and select a JSON-formatted subtitles file which is in the form of: <code>[ {"text":'', "start":hh:mm:ss.sss, "end":hh:mm:ss.sss}, ...]</code></li>
+		<li>Start the subtitle player by either clicking the play button, or the delay-start-by-5-seconds play button</li>
+		<li>Try to start the video as the subtitle clock starts</li>
+		<li>Keep the subtitle clock and video clock synchronized</li>
+	</ol>
+	<p>If the subtitle clock is off, select what the current subtitle should be from the dropdown menu</p>
+	<h2>About</h2>
+	<p>This was a proof of concept to see how to display subtitles with online video. The approach that is currently implemented has many drawbacks, the biggest
+	of which is that the clock that is used to display the subtitles at the appropriate time is independent of the video's clock. This makes it very difficult to
+	keep the clocks synchronized so that the correct subtitle is displayed. This is a big problem as many videos run advertisments midway or may pause to buffer, so that one has to be on guard to stop
+	the subtitles and then start them again when the video starts again. I tried to address this by having a dropdown menu where one could choose the current subtitle.</p>
+	<p>The reason for this instead of using downloaded media for use with a real video player was an attempt to improve my listening skills. I had intended to use
+	online foreign language video that I had subtitles available for and play the video with the subtitles off the screen so that I would not depend on my reading skills
+	but also have the text available for quick lookup of unknown words. However, because my listening skills are very weak, anything that disturbs my concentration causes
+	me to lose focus. The need to fiddle with the subtitle clock and the need to recognize I am not currently understanding so that I should look at the subtitles is distracting
+	enough that this prevents me from focusing on the audio itself.</p>
+	<p>This could be improved by instead showing all the subtitles in a table and focusing near the vicinity of what should be the current subtitle. This means that
+	errors in clock synchronization will not matter as much. However, this means that all the subtitles are visible, which will make me use my reading skills instead of
+	listening, which was the intented goal.</p>
+</html>
